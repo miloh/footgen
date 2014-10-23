@@ -52,7 +52,7 @@ class Generator():
         linewidth = min(self.height,self.width)
         linelength = abs(self.height-self.width)
         if self.height>self.width:
-        #vertcal pad
+        #vertical pad
             x1 = x
             x2 = x
             y1 = y - linelength/2
