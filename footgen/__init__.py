@@ -21,12 +21,14 @@
 #
 # Patches and bug reports to darrell@dlharmon.com
 
-import geda, kicad
+import footgen.geda as geda
+import footgen.kicad as kicad
+
 import re
 import math
 
-class Footgen():
-    def __init__(self, name=None, output_format="geda"):
+class Footgen(object):
+    def __init__(self, name=None, output_format="geda	"):
         self.generator = None
         self.output_format = output_format
         self.new_footprint(name)
@@ -66,11 +68,14 @@ class Footgen():
         self.generator.width = xsize
         self.generator.height = ysize
         self.generator.add_pad(x,y, name)
-        
+
     def rowofpads(self, pos, whichway, startnum, numpads):
-        """ draw a row of rectangular pads
+        """draw a row of rectangular pads
         pos is the center position [x,y]
-        whichway is "up" "down" "left" or "right" """
+        whichway is "up" "down" "left" or "right"
+
+        The options_list of the generator is not modified.
+        """
         rowlen = self.pitch * (numpads - 1)
         if whichway == "down":
             x = pos[0]
@@ -113,9 +118,9 @@ class Footgen():
             pin = str(self.pins+1)
         self.generator.width = w
         self.generator.height = h
-        self.generator.options = "nopaste"
+        self.generator.options_list = ["nopaste"]
         self.generator.add_pad(0,0,pin)
-        self.generator.options = ""
+        self.generator.options_list = []
         dotsizex = w/dots[0]
         dotsizey = h/dots[1]
         scale = math.sqrt(coverage)
@@ -135,25 +140,27 @@ class Footgen():
         self.generator.drill = size
         self.generator.diameter = pad
         print size, pad
-        self.generator.options = "circle"
+        self.generator.options_list = ["circle"]
         for x in range(columns):
             for y in range(rows):
-                self.generator.add_pad((x-(columns-1)*0.5)*pitch,(y-(rows-1)*0.5)*pitch,pin)                
+                self.generator.add_pad((x-(columns-1)*0.5)*pitch,(y-(rows-1)*0.5)*pitch,pin)
 
     def add_via(self, pin="1", x=0.0, y=0.0, size=0.3302, pad=0.7):
         """ add a single via to the footprint """
-        oldopts = self.generator.options
+        oldopts = self.generator.options_list
         olddia = self.generator.diameter
         self.generator.drill = size
         self.generator.diameter = pad
-        self.generator.options = "circle"
+        self.generator.options_list = ["circle"]
         self.generator.add_pad(x,y,pin)
-        self.generator.options = oldopts
+        self.generator.options_list = oldopts
         self.generator.drill = 0
         self.generator.diameter = olddia
 
     def sm_pads(self):
-        """ create pads for a dual or quad SM package """
+        """Create pads for a dual or quad SM package.
+
+        The options_list of the generator is not modified."""
         left_x = -0.5*(self.width+self.padwidth)
         dir_bottom = "right"
         dir_top = "left"
@@ -161,33 +168,32 @@ class Footgen():
             left_x *= -1
             dir_bottom = "left"
             dir_top = "right"
-        #print self.name, self.padheight, self.padwidth, self.pinshigh
+
         if self.pinshigh:
-            self.generator.height = self.padheight
-            self.generator.width = self.padwidth
-            # left going down
-            rowlen = self.pitch * (self.pinshigh - 1)
-            y = rowlen*-0.5
-            for padnum in range (1, 1 + self.pinshigh):
-                self.generator.add_pad(left_x,y,str(padnum))
-                y += self.pitch
-            # draw right side going up
-            y = rowlen*0.5
-            for padnum in range (self.pinshigh+self.pinswide+1, self.pinshigh*2+self.pinswide+1):
-                self.generator.add_pad(-left_x,y,str(padnum))
-                y -= self.pitch
+            self.rowofpads((left_x, 0), "down", 1, self.pinshigh)
+            self.rowofpads((-left_x, 0),"up", self.pinshigh + self.pinswide + 1, self.pinshigh)
         if self.pinswide:
             # draw bottom
             self.rowofpads([0,(self.height+self.padwidth)*0.5], dir_bottom, self.pinshigh+1, self.pinswide)
             # draw top
             self.rowofpads([0,-(self.height+self.padwidth)*0.5], dir_top, 2*self.pinshigh+self.pinswide+1, self.pinswide)
-        
-    def qfn(self):
+
+    def qfn(self, square=True):
+        if square:
+            self.generator.options_list.append("square")
+        else:
+            self.generator.options_list.append("rounded")
+
         self.pinshigh = self.pins/4
         self.pinswide = self.pinshigh
         self.height = self.width
         self.sm_pads()
- 
+
+        if square:
+            self.generator.options_list.remove("square")
+        else:
+            self.generator.options_list.remove("rounded")
+
     def so(self):
         """ create a dual row surface mount footprint uses pins, padwidth, padheight, pitch """
         if self.pins % 2:
@@ -222,7 +228,7 @@ class Footgen():
         self.height = 1
         self.pitch = 1
         self.sm_pads()
-    
+
     def tabbed(self):
         """ generate a part with a tab such as SOT-223 """
         totalheight = self.height+self.tabheight+self.padheight
@@ -233,21 +239,21 @@ class Footgen():
         self.generator.height = self.tabheight
         self.generator.width = self.tabwidth
         self.generator.add_pad(0,taby,str(self.pins+1))
-    
+
     def dip(self):
         """ DIP and headers, set width to 0 and pincount to 2x the desired for SIP"""
         self.generator.drill = self.drill
         self.generator.diameter = self.diameter
         self.generator.height = self.diameter
         self.generator.width = self.diameter
-        self.generator.options = "square"
+        self.generator.options_list = ["square"]
         y = -(self.pins*0.5-1.0)*self.pitch*0.5
         x = self.width*0.5
         if self.mirror:
             x *= -1
         for pinnum in range (1,1+self.pins/2):
             self.generator.add_pad(-x,y,str(pinnum))
-            self.generator.options = "circle" # after pin 1 gets placed
+            self.generator.options_list = ["circle"] # after pin 1 gets placed
             y += self.pitch
         y -= self.pitch
         if self.width != 0:
@@ -271,7 +277,7 @@ class Footgen():
         x = self.width*0.5
         for pinnum in range (1,1+self.pins,2):
             self.generator.add_pad(-x,y,str(pinnum))
-            self.generator.options = "circle"
+            self.generator.options_list = ["circle"]
             y += self.pitch
         if self.width != 0:
             y = -(self.pins/2-1)*self.pitch*0.5
@@ -360,7 +366,7 @@ class Footgen():
         if self.mirror:
             yoff = -yoff
             ypitch = -ypitch
-        self.generator.options += "circle"
+        self.generator.options_list.append("circle")
         self.generator.diameter = self.diameter
         for row in range(1, rows+1):
             for col in range(1, 1+columns):
@@ -368,21 +374,22 @@ class Footgen():
                     x = xoff + (self.pitch*col)
                     y = yoff + (ypitch*row)
                     self.generator.add_pad(x, y, self.ballname(col,row))
-                    
+
     def silkbox(self, w=None, h=None, notch=None, silkwidth=0.155, arc=None, circle=None, nosides=False):
         self.generator.silkwidth = silkwidth
-        if not h:
+
+        if h is None:
             h = w
-        if notch:
+        if notch is not None:
             pullback = notch
         else:
             pullback = 0.0
-        if notch:
+        if notch is not None:
             self.generator.silk_line(-0.5*w+pullback, -0.5*h, -0.5*w, -0.5*h+pullback)
-        if arc:
+        if arc is not None:
             self.generator.silk_arc(0, -0.5*h, arc,-0.5*h, 180.0)
-        if circle:
-            self.generator.silk_circle(-0.5*w, -0.5*h-circle, circle)
+        if circle is not None:
+            self.generator.silk_circle(-0.5*w+2*circle, -0.5*h+2*circle, circle)
         if not nosides:
             # left
             self.generator.silk_line(-0.5*w, -0.5*h+pullback, -0.5*w, 0.5*h)
@@ -393,8 +400,8 @@ class Footgen():
         # top
         self.generator.silk_line(-0.5*w+pullback, -0.5*h, 0.5*w, -0.5*h)
 
-        
-    
+
+
     # draw silkscreen box
     def box_corners(self, x1, y1, x2, y2):
         """ draw a silkscreen rectangle with corners x1,y1 and x2,y2 """
@@ -428,6 +435,6 @@ class Footgen():
         self.generator.silk_line( x,  y, x_stop, y)
         self.generator.silk_line( x,  y, x, y_stop)
 
-# some unit conversions to mm    
+# some unit conversions to mm
 mil = 0.0254
 inch = 25.4
