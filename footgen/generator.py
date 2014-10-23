@@ -67,7 +67,7 @@ class BaseGenerator(object):
         # and only supply square explicitely as a flag.
         if "circle" in self.options_list and "square" in self.options_list:
             warnings.warn("square and circle options given for pad {}.\n"
-                          "Default to square".fomrat(name))
+                          "Default to square".format(name))
 
     def _unhandled_options(self):
         # some thoughts on improving this: check the options with an
