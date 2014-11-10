@@ -39,7 +39,8 @@ def pciecard(npins, name):
     g.silk_line(58.1 + 0.7, 0.0, cardedge_endx - 0.7, 0.0) # lower edge 2nd contacts
     g.silk_line(cardedge_endx -0.7, 0.0, cardedge_endx, -0.7)
     g.silk_line(cardedge_endx, -0.7, cardedge_endx, -13.0)
-    output_file = open(name + ".kicad_mod", "w")
+    outout_format = "geda"
+    output_file = open(name + ".fp", "w")
     output_file.write(g.finish())
     output_file.close()
 
