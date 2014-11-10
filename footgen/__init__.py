@@ -28,7 +28,7 @@ import re
 import math
 
 class Footgen(object):
-    def __init__(self, name=None, output_format="geda	"):
+    def __init__(self, name=None, output_format="geda"):
         self.generator = None
         self.output_format = output_format
         self.new_footprint(name)
