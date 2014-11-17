@@ -55,8 +55,10 @@ On all dimension parameters units should be included and unit conversion will au
 
 Required parameters for all types:
 
-    maskclear = X # soldermask clearance to copper feature
-    polyclear = X # polygon clearance to copper feature
+    generator.mask_clearance = X # soldermask clearance to copper feature,
+requires declaration of the generator since definition changes based on geda/kicad output
+    generator.clearance = X # polygon clearance to copper feature, also
+requires generator
     type = "bga" or "qfp" or "so" or "twopad" or "tabbed" or "dip" or "sip"
     silkwidth
     
