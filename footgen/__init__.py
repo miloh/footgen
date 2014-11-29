@@ -157,6 +157,18 @@ class Footgen(object):
         self.generator.drill = 0
         self.generator.diameter = olddia
 
+    def add_mount(self, pin="mount", x=0.0, y=0.0, size=3.404, pad=3.404):
+        """ add a single unplated mount point to the footprint """
+        oldopts = self.generator.options_list
+        olddia = self.generator.diameter
+        self.generator.drill = size
+        self.generator.diameter = pad
+        self.generator.options_list = ["circle","noplate"]
+        self.generator.add_pad(x,y,pin)
+        self.generator.options_list = oldopts
+        self.generator.drill = 0
+        self.generator.diameter = olddia
+
     def sm_pads(self):
         """Create pads for a dual or quad SM package.
 
