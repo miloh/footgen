@@ -447,6 +447,13 @@ class Footgen(object):
         self.generator.silk_line( x,  y, x_stop, y)
         self.generator.silk_line( x,  y, x, y_stop)
 
+    def silk_diamond(self, xcenter=0,ycenter=0,size=1,silkwidth=0.155):
+        self.generator.silkwidth = silkwidth
+        self.generator.silk_line(xcenter - size, ycenter, xcenter, ycenter + size)
+        self.generator.silk_line(xcenter - size, ycenter, xcenter, ycenter - size)
+        self.generator.silk_line(xcenter + size, ycenter, xcenter, ycenter + size)
+        self.generator.silk_line(xcenter + size, ycenter, xcenter, ycenter - size)
+
 # some unit conversions to mm
 mil = 0.0254
 inch = 25.4
