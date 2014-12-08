@@ -426,7 +426,7 @@ class Footgen(object):
         """ draw a silkscreen line """
         self.generator.silk_line(x1,y1,x2,y2)
           
-    def silk_crop(self, w=None, h=None, pin1style="line",croplength=0.25,silkwidth=0.155,rotate=0):
+    def silk_crop(self, w=None, h=None, pin1="",croplength=0.25,silkwidth=0.155,rotate=0):
         x_stop = 0.5*self.pitch*(self.pinswide-1) + .5*self.padheight + 2*silkwidth
         y_stop = 0.5*self.pitch*(self.pinshigh-1) + .5*self.padheight + 2*silkwidth
         self.generator.silkwidth = silkwidth
@@ -439,8 +439,10 @@ class Footgen(object):
         y_locator = rot_quad[str(rotate)][1]*(y+croplength)
         if "circle" in pin1:
             self.generator.silk_circle(x_locator,y_locator, croplength)
+        elif "diamond" in pin1: 
+            self.silk_diamond(x_locator,y_locator,size=croplength,silkwidth=silkwidth)
         else: # tick
-            self.generator.silk_line(x_locator-croplength/2.0, y_locator-croplength/2.0, x_locator+croplength/2.0, x_locator+croplength/2.0)
+            self.generator.silk_line(x_locator, y_locator,rot_quad[str(rotate)][0]*(0.5*w),rot_quad[str(rotate)][1]*(0.5*w) )
         self.generator.silk_line(-x, -y, -x, -y_stop)
         self.generator.silk_line(-x, -y, -x_stop, -y)
         self.generator.silk_line(-x,  y, -x, y_stop)
