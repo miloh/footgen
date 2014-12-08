@@ -426,7 +426,7 @@ class Footgen(object):
         """ draw a silkscreen line """
         self.generator.silk_line(x1,y1,x2,y2)
           
-    def silk_crop(self, w=None, h=None, pin1="",croplength=0.25,silkwidth=0.155,rotate=0):
+    def silk_crop(self, w=None, h=None, pin1style="line",croplength=0.25,silkwidth=0.155,rotate=0):
         x_stop = 0.5*self.pitch*(self.pinswide-1) + .5*self.padheight + 2*silkwidth
         y_stop = 0.5*self.pitch*(self.pinshigh-1) + .5*self.padheight + 2*silkwidth
         self.generator.silkwidth = silkwidth
@@ -435,12 +435,12 @@ class Footgen(object):
         x = 0.5*w
         y = 0.5*h
         rot_quad = {'180':[1,1],'-90':[-1,1],'0':[-1,-1],'90':[1,-1]}
-        x_locator = rot_quad[rotate][0]*(x+croplength)
-        y_locator = rot_quad[rotate][1]*(y+croplength)
+        x_locator = rot_quad[str(rotate)][0]*(x+croplength)
+        y_locator = rot_quad[str(rotate)][1]*(y+croplength)
         if "circle" in pin1:
-            self.generator.silk_circle(x_locater,y_locator, croplength)
+            self.generator.silk_circle(x_locator,y_locator, croplength)
         else: # tick
-            self.generator.silk_line(x_locator, y_locator, -0.5*w-croplength, -0.5*h-croplength)
+            self.generator.silk_line(x_locator-croplength/2.0, y_locator-croplength/2.0, x_locator+croplength/2.0, x_locator+croplength/2.0)
         self.generator.silk_line(-x, -y, -x, -y_stop)
         self.generator.silk_line(-x, -y, -x_stop, -y)
         self.generator.silk_line(-x,  y, -x, y_stop)
