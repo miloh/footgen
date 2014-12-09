@@ -1,21 +1,37 @@
-#Footgen
+Footgen
+=======
 
 Footprint generator for Kicad and gEDA in Python
 
 To generate footprints:
 <pre><code>
-$ tar -zxf footgen.tar.gz
-$ cd footgen
-$ ./footgen.py footprintdata
+tar -zxf footgen.tar.gz
+cd footgen
+sudo python setup.py build
+sudo python setup.py install
 </code></pre>
-<p>
-The following is a sample input file which generates some BGA footprints,
+
+Use
+===
+
+Each script in the example dir silently generates geda/gaf or kicad (geda default) footprint files or a family of footprints in the directory that calls it.
+The following commands would create as set of  bga parts in the /project directory
+<pre><code>
+cd ~/project
+python bga.py
+</code></pre>
+
+
+Examples
+========
+<p>The following is a sample input file which generates some BGA footprints,
 Notice how the part statement follows the data defining the part. When the part
 statement is issued, the footprint is generated using the last defined
 parameters. This allows definition of a family of parts without repeating the
 portions which are the same. The script is released under the GPL, but the
 footprint definition files and output are public domain. </p>
 
+<p>
     Xilinx BGA packages
     data from XAPP157
     Entered by Darrell Harmon
@@ -49,19 +65,20 @@ footprint definition files and output are public domain. </p>
         cols = 34
     part "FG1156"
 
-<p>
-On all dimension parameters units should be included and unit conversion will automatically be performed. If no units are given, units of nanometers will be assumed
-. </p></p>Comments begin with "#"</p>
+</p>
 
-Required parameters for all types:
+Required parameters for all types
+==================================
+<pre><code>
+generator.mask_clearance = X # soldermask clearance to copper feature, requires declaration of the generator since definition changes based on geda/kicad output 
 
-    generator.mask_clearance = X # soldermask clearance to copper feature,
-requires declaration of the generator since definition changes based on geda/kicad output
-    generator.clearance = X # polygon clearance to copper feature, also
-requires generator
-    type = "bga" or "qfp" or "so" or "twopad" or "tabbed" or "dip" or "sip"
-    silkwidth
-    
+generator.clearance = X # polygon clearance to copper feature, also requires generator 
+
+type = "bga" or "qfp" or "so" or "twopad" or "tabbed" or "dip" or "sip"
+
+silkwidth???verify this
+i/code></pre> 
+<pre>
     Parameters for BGA:
     rows
     cols
@@ -108,4 +125,4 @@ requires generator
     pitch (typically 0.1 in)
     paddia (ring around hole)
     drill (hole size)
-
+</pre>
