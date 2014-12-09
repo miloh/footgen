@@ -4,23 +4,22 @@ Footgen
 Footprint generator for Kicad and gEDA in Python
 
 To generate footprints:
-<pre><code>
+
+```
 tar -zxf footgen.tar.gz
 cd footgen
 sudo python setup.py build
 sudo python setup.py install
-</code></pre>
+```
 
 Use
 ===
-
 Each script in the example dir silently generates geda/gaf or kicad (geda default) footprint files or a family of footprints in the directory that calls it.
 The following commands would create as set of  bga parts in the /project directory
-<pre><code>
+```
 cd ~/project
 python bga.py
-</code></pre>
-
+```
 
 Examples
 ========
@@ -31,7 +30,7 @@ parameters. This allows definition of a family of parts without repeating the
 portions which are the same. The script is released under the GPL, but the
 footprint definition files and output are public domain. </p>
 
-<p>
+
     Xilinx BGA packages
     data from XAPP157
     Entered by Darrell Harmon
@@ -65,11 +64,11 @@ footprint definition files and output are public domain. </p>
         cols = 34
     part "FG1156"
 
-</p>
 
 Required parameters for all types
 ==================================
-<pre><code>
+
+```
 generator.mask_clearance = X # soldermask clearance to copper feature, requires declaration of the generator since definition changes based on geda/kicad output 
 
 generator.clearance = X # polygon clearance to copper feature, also requires generator 
@@ -77,8 +76,8 @@ generator.clearance = X # polygon clearance to copper feature, also requires gen
 type = "bga" or "qfp" or "so" or "twopad" or "tabbed" or "dip" or "sip"
 
 silkwidth???verify this
-i/code></pre> 
-<pre>
+```
+
     Parameters for BGA:
     rows
     cols
@@ -125,4 +124,3 @@ i/code></pre>
     pitch (typically 0.1 in)
     paddia (ring around hole)
     drill (hole size)
-</pre>
