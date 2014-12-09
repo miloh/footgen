@@ -8,13 +8,13 @@ Footprint generator for Kicad and gEDA in Python
 tar -zxf footgen.tar.gz
 cd footgen
 sudo python setup.py build
-sudo python setup.py install --record files.txt
+sudo python setup.py install --record install_files.txt
 ```
 
  Removal
 ```
 cd footgen
-cat files.txt | xargs rm -rf
+sudo cat install_files.txt | xargs rm -rf
 ```
 
 Use
