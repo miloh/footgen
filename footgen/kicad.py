@@ -86,7 +86,7 @@ class Generator(BaseGenerator):
         self.mask_clearance = False
         self.part = part
         self.thermal = 'default'
-        self.silkwidth = 0.254 # 10.0mil / 0.254mm to work with most silkprocesses (silkscreen min typically 10mil, LPI & DLP less)
+        self.silkwidth = 0.1524 # 6.0mil / 0.1524mm to work with most silkprocesses (silkscreen, LPI, & DLP)
         self.mirror = ""
         self.silklayer = "F.SilkS"
         self.fp = "(module {} (layer F.Cu)\n".format(part)

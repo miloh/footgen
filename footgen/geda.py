@@ -37,7 +37,7 @@ class Generator(BaseGenerator):
         self.drill = 0 # drill diameter
         self.angle = 0 # rotation - only kicad
         self.clearance = 0.2
-        self.silkwidth = 0.254 # 10.0mil / 0.254mm to work with most silkprocesses (silkscreen min typically 10mil, LPI & DLP less)
+        self.silkwidth = 0.1524 # 6.0mil / 0.1524mm to work with most silkprocesses (silkscreen, LPI, & DLP)
         self.mask_clearance = 0.075
         self.part = part
         refdesy = 0
