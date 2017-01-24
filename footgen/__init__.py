@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # footgen.py
-# Copyright (C) 2005-2016 Darrell Harmon
-# Copyright (C) 2016 Levente Kovacs
+# Copyright (C) 2005-2013 Darrell Harmon
 # Generates footprints for PCB from text description
 # The GPL applies only to the python scripts.
 # the output of the program and the footprint definition files
@@ -595,6 +594,41 @@ class Footgen(object):
         self.silk_line(x2,y1,x2,y2, width = width)
         self.silk_line(x2,y2,x1,y2, width = width)
         self.silk_line(x1,y2,x1,y1, width = width)
+
+    def silk_crop(self, w=None, h=None, pin1="",croplength=0.25,silkwidth=0.155,rotate=0):
+        """cropped silk_box to prevent silk overlaps"""
+	x_stop = 0.5*self.pitch*(self.pinswide-1) + .5*self.padheight + 2*silkwidth
+        y_stop = 0.5*self.pitch*(self.pinshigh-1) + .5*self.padheight + 2*silkwidth
+        self.silkwidth = silkwidth
+        if not h:
+            h = w
+        x = 0.5*w
+        y = 0.5*h
+        rot_quad = {'180':[1,1],'-90':[-1,1],'0':[-1,-1],'90':[1,-1]}
+        x_locator = rot_quad[str(rotate)][0]*(x+croplength)
+        y_locator = rot_quad[str(rotate)][1]*(y+croplength)
+        if "circle" in pin1:
+            self.silk_circle(x_locator,y_locator, croplength)
+        elif "diamond" in pin1: 
+            self.silk_diamond(x_locator,y_locator,size=croplength,silkwidth=silkwidth)
+        else: # tick
+            self.silk_line(x_locator, y_locator,rot_quad[str(rotate)][0]*(0.5*w),rot_quad[str(rotate)][1]*(0.5*w) )
+        self.silk_line(-x, -y, -x, -y_stop)
+        self.silk_line(-x, -y, -x_stop, -y)
+        self.silk_line(-x,  y, -x, y_stop)
+        self.silk_line(-x,  y, -x_stop, y)
+        self.silk_line( x, -y, x_stop, -y)
+        self.silk_line( x, -y, x, -y_stop)
+        self.silk_line( x,  y, x_stop, y)
+        self.silk_line( x,  y, x, y_stop)
+
+    def silk_diamond(self, xcenter=0,ycenter=0,size=1,silkwidth=0.155):
+        """ draw a silk diamond as a pin pone marker"""
+	self.silkwidth = silkwidth
+        self.silk_line(xcenter - size, ycenter, xcenter, ycenter + size)
+        self.silk_line(xcenter - size, ycenter, xcenter, ycenter - size)
+        self.silk_line(xcenter + size, ycenter, xcenter, ycenter + size)
+        self.silk_line(xcenter + size, ycenter, xcenter, ycenter - size)
 
 # some unit conversions to mm
 mil = 0.0254
