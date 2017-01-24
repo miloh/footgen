@@ -28,47 +28,6 @@ python bga.py
 
 Examples
 ========
-<p>The following is a sample input file which generates some BGA footprints,
-Notice how the part statement follows the data defining the part. When the part
-statement is issued, the footprint is generated using the last defined
-parameters. This allows definition of a family of parts without repeating the
-portions which are the same. The script is released under the GPL, but the
-footprint definition files and output are public domain. </p>
-
-
-    Xilinx BGA packages
-    data from XAPP157
-    Entered by Darrell Harmon
-    values for all 1mm pitch Xilinx BGA
-        type = "bga"
-        pitch = 1mm
-        silkwidth = 10 mils
-        silkoffset = 1mm                # used if silkbox is invalid
-        dia = 0.4mm
-        maskclear = 0.1mm
-        polyclear = 6 mil
-    Xilinx FT256 1mm pitch BGA
-        silkboxwidth = 17mm
-        silkboxheight = 17mm
-        rows = 16
-        cols = 16
-    part "FT256"
-        rows = 22
-        cols = 22
-	# some balls missing on FG456
-        omitballs = "H8:R8,H8:H15,R8:R15,H15:R15"
-    part "FG456"
-        rows = 26
-        cols = 26
-        omitballs = ""
-    part "FG676"
-        rows = 30
-        cols = 30
-    part "FG900"
-        rows = 34
-        cols = 34
-    part "FG1156"
-
 
 Required parameters for all types
 ==================================
@@ -80,7 +39,6 @@ generator.clearance = X # polygon clearance to copper feature, also requires gen
 
 type = "bga" or "qfp" or "so" or "twopad" or "tabbed" or "dip" or "sip"
 
-silkwidth???verify this
 ```
 
     Parameters for BGA:
