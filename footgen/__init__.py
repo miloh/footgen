@@ -97,6 +97,46 @@ class Footgen(object):
                              drill = size
                          )
 
+    def rowofpads(self, pos, whichway, startnum, numpads):
+        """draw a row of rectangular pads
+        pos is the center position [x,y]
+        whichway is "up" "down" "left" or "right"
+        The options_list of the generator is not modified.
+        """
+        rowlen = self.pitch * (numpads - 1)
+        if whichway == "down":
+            x = pos[0]
+            y = pos[1] - rowlen*0.5
+            self.generator.height = self.padheight
+            self.generator.width = self.padwidth
+            for padnum in range (startnum, startnum+numpads):
+                self.generator.add_pad(x,y,str(padnum))
+                y = y + self.pitch
+        elif whichway == "up":
+            x = pos[0]
+            y = pos[1] + rowlen*0.5
+            self.generator.height = self.padheight
+            self.generator.width = self.padwidth
+            for padnum in range (startnum, startnum+numpads):
+                self.generator.add_pad(x,y,str(padnum))
+                y = y - self.pitch
+        elif whichway == "right":
+            x = pos[0] - rowlen*0.5
+            y = pos[1]
+            self.generator.height = self.padwidth
+            self.generator.width = self.padheight
+            for padnum in range (startnum, startnum+numpads):
+                self.generator.add_pad(x,y,str(padnum))
+                x = x + self.pitch
+        elif whichway == "left":
+            x = pos[0] + rowlen*0.5
+            y = pos[1]
+            self.generator.height = self.padwidth
+            self.generator.width = self.padheight
+            for padnum in range (startnum, startnum+numpads):
+                self.generator.add_pad(x,y,str(padnum))
+                x = x - self.pitch
+
     def sm_pads(self,
                 pitch = 0,
                 width = None,
