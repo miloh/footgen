@@ -596,7 +596,7 @@ class Footgen(object):
         self.silk_line(x1,y2,x1,y1, width = width)
 
     def silk_crop(self, w=None, h=None, pin1="",croplength=0.25,silkwidth=0.155,rotate=0):
-        """cropped silk_box to prevent silk overlaps"""
+        """cropped silk_box to prevent silk overlaps with asymmetric housing features"""
 	x_stop = 0.5*self.pitch*(self.pinswide-1) + .5*self.padheight + 2*silkwidth
         y_stop = 0.5*self.pitch*(self.pinshigh-1) + .5*self.padheight + 2*silkwidth
         self.silkwidth = silkwidth
