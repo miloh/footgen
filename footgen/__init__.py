@@ -107,34 +107,34 @@ class Footgen(object):
         if whichway == "down":
             x = pos[0]
             y = pos[1] - rowlen*0.5
-            self.generator.height = self.padheight
-            self.generator.width = self.padwidth
+            xsize = self.padheight
+            ysize = self.padwidth
             for padnum in range (startnum, startnum+numpads):
-                self.generator.add_pad(x,y,str(padnum))
+                self.add_pad(str(padnum),x,y,xsize,ysize)
                 y = y + self.pitch
         elif whichway == "up":
             x = pos[0]
             y = pos[1] + rowlen*0.5
-            self.generator.height = self.padheight
-            self.generator.width = self.padwidth
+            xsize = self.padheight
+            ysize = self.padwidth
             for padnum in range (startnum, startnum+numpads):
-                self.generator.add_pad(x,y,str(padnum))
+                self.add_pad(str(padnum),x,y,xsize,ysize)
                 y = y - self.pitch
         elif whichway == "right":
             x = pos[0] - rowlen*0.5
             y = pos[1]
-            self.generator.height = self.padwidth
-            self.generator.width = self.padheight
+            xsize = self.padwidth
+            ysize = self.padheight
             for padnum in range (startnum, startnum+numpads):
-                self.generator.add_pad(x,y,str(padnum))
+                self.add_pad(str(padnum),x,y,xsize,ysize)
                 x = x + self.pitch
         elif whichway == "left":
             x = pos[0] + rowlen*0.5
             y = pos[1]
-            self.generator.height = self.padwidth
-            self.generator.width = self.padheight
+            xsize = self.padwidth
+            ysize = self.padheight
             for padnum in range (startnum, startnum+numpads):
-                self.generator.add_pad(x,y,str(padnum))
+                self.add_pad(str(padnum),x,y,xsize,ysize)
                 x = x - self.pitch
 
     def sm_pads(self,
